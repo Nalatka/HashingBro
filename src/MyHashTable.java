@@ -1,5 +1,5 @@
 public class MyHashTable<K,V> {
-    private class Node<K,V> {
+    public class Node<K,V> {
         private K key;
         private V value;
         private Node<K,V> next;
@@ -27,9 +27,9 @@ public class MyHashTable<K,V> {
                     '}';
         }
     }
-    private Node<K,V>[] chainArray;
-    private int size;
-    private int M=11;
+    Node<K,V>[] chainArray;
+     int size;
+     int M=11;
     public MyHashTable() {
         chainArray = new Node[M];
     }
@@ -38,10 +38,11 @@ public class MyHashTable<K,V> {
         chainArray = new Node[M];
     }
     private int hash(K key) {
-        return key.hashCode() % M;
+        int hash = key.hashCode()%M;
+        return (hash<0)?(hash+M):(hash);
     }
     public void put(K key, V value) {
-        int index = key.hashCode() % M;
+        int index = hash(key);
         Node<K,V> node = chainArray[index];
         if (node == null) {
             chainArray[index] = new Node<>(key, value);
@@ -62,6 +63,7 @@ public class MyHashTable<K,V> {
             size++;
         }
 
+        checkResize();
     }
     public V get(K key) {
         int index = hash(key);
@@ -111,5 +113,37 @@ public class MyHashTable<K,V> {
         }
         return null;
     }
-
+    public V getValue(K key) {
+        int index = hash(key);
+        Node<K,V> node = chainArray[index];
+        while (node != null) {
+            if (node.getKey().equals(key)) {
+                return node.getValue();
+            }
+            node = node.getNext();
+        }
+        return null;
+    }
+    private void resize() {
+        int newM = M * 2; // Увеличиваем размер в 2 раза
+        Node<K, V>[] newChainArray = new Node[newM];
+        for (Node<K, V> node : chainArray) {
+            while (node != null) {
+                K key = node.getKey();
+                V value = node.getValue();
+                int newIndex = Math.abs(key.hashCode()) % newM; // Новый индекс
+                Node<K, V> newNode = new Node<>(key, value);
+                newNode.setNext(newChainArray[newIndex]);
+                newChainArray[newIndex] = newNode;
+                node = node.getNext();
+            }
+        }
+        chainArray = newChainArray;
+        M = newM;
+    }
+    public void checkResize() {
+        if ((size * 1.0) / M > 0.75) {
+            resize();
+        }
+    }
 }
