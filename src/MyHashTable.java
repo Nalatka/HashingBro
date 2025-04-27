@@ -63,9 +63,6 @@ public class MyHashTable<K,V> {
         }
         return null;
     }
-    public int getSize() {
-        return size;
-    }
     public V remove(K key) {
         int index = hash(key);
         Node<K,V> node = chainArray[index];
@@ -99,5 +96,5 @@ public class MyHashTable<K,V> {
         }
         return null;
     }
-    
+
 }
