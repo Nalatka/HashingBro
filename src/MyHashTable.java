@@ -45,12 +45,23 @@ public class MyHashTable<K,V> {
         Node<K,V> node = chainArray[index];
         if (node == null) {
             chainArray[index] = new Node<>(key, value);
+            size++;
         } else {
-            while (node.getNext() != null) {
-                node = node.getNext();
+            Node<K,V> cur = node;
+            while (cur.getNext() != null) {
+                if (cur.getKey().equals(key)) {
+                    cur.value = value;
+                    return;
+                }
+                if(cur.getNext()==null) {
+                    break;
+                }
+                cur = cur.getNext();
             }
-            node.setNext(new Node<>(key, value));
+            cur.setNext(new Node<>(key, value));
+            size++;
         }
+
     }
     public V get(K key) {
         int index = hash(key);
@@ -74,13 +85,17 @@ public class MyHashTable<K,V> {
                     return node.getValue();
                 } else {
                     pre.setNext(node.getNext());
-                    return node.getValue();
                 }
+                size--;
+                return node.getValue();
             }
             pre = node;
             node = node.getNext();
         }
         return null;
+    }
+    public int getSize() {
+        return size;
     }
     public boolean contains(K key) {
         return get(key) != null;
