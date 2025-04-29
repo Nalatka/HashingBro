@@ -27,9 +27,6 @@ public class MyTestingClass {
         if (this.id != other.id) {
             return false;
         }
-        if (!this.name.equals(other.name)) {
-            return false;
-        }
         return true;
     }
     @Override

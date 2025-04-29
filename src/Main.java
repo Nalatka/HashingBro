@@ -2,23 +2,20 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        MyHashTable<MyTestingClass, Student> hashTable = new MyHashTable<>();
+        MyHashTable<Integer,Student> hashTable = new MyHashTable<>();
         Random random = new Random();
-        for (int i = 0; i < 100000; i++) {
-            int id = random.nextInt(100000);
-            String name = "name" + random.nextInt(100000);
-            MyTestingClass key = new MyTestingClass(id, name);
-            Student value = new Student(name, id);
-            hashTable.put(key, value);
+        for(int i=0;i<100000;i++) {
+            hashTable.put(random.nextInt(100000),new Student("name"+i,random.nextInt(100)));
         }
-        for (int i = 0; i < hashTable.getSize(); i++) {
+        for(int i=0;i< hashTable.M;i++) {
             int count = 0;
-            MyHashTable<MyTestingClass, Student>.Node<MyTestingClass, Student> node = hashTable.chainArray[i];
-            while (node != null) {
+            MyHashTable<Integer, Student>.Node<Integer, Student> head = hashTable.chainArray[i];
+            while(head!=null) {
                 count++;
-                node = node.getNext();
+                head = head.getNext();
             }
-            System.out.println("Bucket " + i + ": " + count + " elements");
+            System.out.println(count);
         }
+        System.out.println(hashTable.getSize());
     }
 }
